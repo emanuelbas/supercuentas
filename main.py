@@ -3,14 +3,15 @@ import random
 import pickle
 import aftergame
 import rankScreen
+import about
 from clases import Cursor,Boton
 from generarProblema import generarProblema
 
 def recibirResultado(resultado):
 #recibe "correcto" o "incorrecto" y trabaja las variables de puntajes y tiempo
-    tiempoDescontar = 5     #Tiempo a descontar si se gana el bonus
+    tiempoDescontar = 10     #Tiempo a descontar si se gana el bonus
     scoreNormal = 10         #Puntos recibidos por un acierto normal
-    scoreRacha = 30          #Puntos recibidos por acertar un bonus
+    scoreRacha = 20          #Puntos recibidos por acertar un bonus
     global rachaActual      #global indica que son variables globales
     global score
     global tiempo
@@ -20,10 +21,10 @@ def recibirResultado(resultado):
     global maxRacha
     if resultado == "correcto":
         if rachaActual == 3:
-            score += scoreRacha
             rachaActual = 0
-            tiempo += -tiempoDescontar
+            tiempo += tiempoDescontar
             tiempoBonus += tiempoDescontar
+            score += scoreRacha
         else:
             score += scoreNormal
             rachaActual += 1
@@ -38,7 +39,7 @@ def recibirResultado(resultado):
 
 
 def game():
-
+#Es el loop principal dentro del juego
     pygame.init()
     pantalla=pygame.display.set_mode((800,600))
     pygame.display.set_caption("Supercuentas")
@@ -89,6 +90,7 @@ def game():
     boton_titulo = Boton(1,10,0,0,"Supercuentas!",20,(255,200,40),"fuentes/EraserDust.ttf")
     boton_score = Boton(600,560,tupla1[0]+20,tupla1[1]+20,"Puntos: " + str(score),50,(200,50,50))
     boton_volver = Boton(250,500,500,530,"Abandonar partida",30,(255,255,255),"fuentes/EraserDust.ttf")
+    boton_racha = Boton(random.randrange(500,550,1),random.randrange(200,400,1),500,530,"Racha!",50,(random.randrange(0,255,1),random.randrange(0,255,1),random.randrange(0,255,1)),"fuentes/EraserDust.ttf")
 
 
     if sonido:
@@ -155,28 +157,31 @@ def game():
         boton_titulo.update(pantalla)
         boton_sonido.update(pantalla)
         boton_volver.update(pantalla)
+        if rachaActual == 3:
+            boton_racha.update(pantalla)
             
         if not salir:
             pygame.display.update()
 
 
 def reglas():
+#Pantalla de reglas
     pygame.init()
     pantalla=pygame.display.set_mode((800,600))
     pygame.display.set_caption("Supercuentas")
     salir=False
     reloj1=pygame.time.Clock()
     fuente1=pygame.font.Font("fuentes/EraserDust.ttf", 45)
-    fuente2=pygame.font.Font("fuentes/EraserDust.ttf", 20)
+    fuente2=pygame.font.Font("fuentes/EraserDust.ttf", 28)
     fondo=pygame.image.load("imagenes/blackboard.jpeg")
     
 
     boton_volver = Boton(300,300,400,330,"Volver",30,(255,255,255),"fuentes/EraserDust.ttf")
     texto1=fuente1.render("Reglas",0,(200,200,50))
-    texto2=fuente2.render("El juego consiste en resolver cuentas, clickea el resultado correcto",0,(255,255,255))
-    texto3=fuente2.render("antes de que acabe el tiempo, Tambien podes conseguir rachas",0,(255,255,255))
-    texto4=fuente2.render("acertando 2 o mas resultados. Tenes un minuto!",0,(255,255,255))
-    texto5=fuente2.render("",0,(255,255,255))
+    texto2=fuente2.render("El juego consiste en resolver cuentas, clickea el ",0,(50,255,255))
+    texto3=fuente2.render("resultado correcto antes de que acabe el tiempo",0,(50,255,255))
+    texto4=fuente2.render("Tambien podes conseguir rachas acertando 3 resultados",0,(50,255,255))
+    texto5=fuente2.render("resolviendo una racha obtendras puntos extra.",0,(50,255,255))
     while salir!=True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -191,16 +196,16 @@ def reglas():
         pantalla.blit(fondo,(0,0))
         pantalla.blit(texto1,(130,40))
         pantalla.blit(texto2,(20,150))
-        pantalla.blit(texto3,(20,170))
-        pantalla.blit(texto4,(20,190))
-        pantalla.blit(texto5,(20,210))
+        pantalla.blit(texto3,(20,175))
+        pantalla.blit(texto4,(20,200))
+        pantalla.blit(texto5,(20,225))
         boton_volver.update(pantalla)
         pygame.display.update()
         
 
 
 def main():
-
+#Loop principal, menu
     pygame.init()
     pantalla=pygame.display.set_mode((800,600))
     pygame.display.set_caption("Supercuentas")
@@ -227,6 +232,7 @@ def main():
     boton_reglas = Boton(130,170,228,198,"Reglas",30,blanco,"fuentes/EraserDust.ttf")
     boton_salir = Boton(130,290,200,315,"Salir",30,blanco,"fuentes/EraserDust.ttf")
     boton_rank = Boton(130,250,235,275,"Ranking",30,blanco,"fuentes/EraserDust.ttf")
+    boton_about = Boton(130,500,400,515,"Acerca de Supercuentas!",20,blanco,"fuentes/EraserDust.ttf")
     if musica:
         boton_musica = Boton(680,10,760,30,"musica ON",20,(255,0,0),"fuentes/EraserDust.ttf")
         pygame.mixer.music.play()
@@ -260,6 +266,10 @@ def main():
                     if sonido:
                         musica1.play()
                     reglas()
+                if boton_about.es_presionado():
+                    if sonido:
+                        musica1.play()
+                    about.about()
                 if boton_rank.es_presionado():
                     if sonido:
                         musica1.play()
@@ -311,6 +321,7 @@ def main():
         boton_nivel.update(pantalla)
         boton_jugar.update(pantalla)
         boton_reglas.update(pantalla)
+        boton_about.update(pantalla)
         boton_salir.update(pantalla)
         boton_musica.update(pantalla)
         boton_titulo.update(pantalla)

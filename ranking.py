@@ -14,7 +14,7 @@ def updateRanking(nombre,score):
     x = 0
     while rank[x][1]>score and x<9:
         x += 1
-    if x<10:
+    if x<9:
         modificado = True
         rank.pop(x)
         rank.append((nombre,score))

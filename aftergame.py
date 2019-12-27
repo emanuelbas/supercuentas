@@ -5,6 +5,7 @@ import preguntarNombre
 from clases import Cursor,Boton
 
 def aftergame(score,racha,fallos):
+#Esto es la pantalla que se muestra cuando termina la partida
     pygame.init()
     pantalla=pygame.display.set_mode((800,600))
     pygame.display.set_caption("Supercuentas")
@@ -16,7 +17,7 @@ def aftergame(score,racha,fallos):
     boton_volver = Boton(300,300,400,330,"Volver",30,(255,255,255),"fuentes/EraserDust.ttf")
     nombre = preguntarNombre.preguntar(pantalla,"Nombre ")
     if ranking.updateRanking(nombre,score):
-        texto1=fuente1.render("WOW Nuevo record!",0,(200,255,200))
+        texto1=fuente1.render("WOW " + nombre + " marcaste un nuevo record!",0,(200,255,200))
     elif fallos < score/10 + racha:
         texto1=fuente1.render("Buen trabajo!",0,(200,255,200))
     elif fallos == 0 and score == 0:
@@ -44,7 +45,7 @@ def aftergame(score,racha,fallos):
         
         pantalla.fill((30,30,200))
         pantalla.blit(fondo,(0,0))
-        pantalla.blit(texto1,(240,50))
+        pantalla.blit(texto1,(50,50))
         pantalla.blit(texto2,(20,150))
         boton_volver.update(pantalla)
         pygame.display.update()

@@ -34,6 +34,8 @@ def preguntar(pantalla, pregunta):
     tecla_leida = leer_tecla()
     if tecla_leida == K_BACKSPACE:
       string_actual = string_actual[0:-1]
+    elif len(string_actual) > 10:
+      sring_actual = string_actual[0:-1]
     elif tecla_leida == K_RETURN:
       break
     elif tecla_leida == K_MINUS:

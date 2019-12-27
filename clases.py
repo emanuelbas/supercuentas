@@ -1,6 +1,7 @@
 import pygame
 
 class Boton:
+#Los botones son rectangulos con texto que pueden ser clickeados
     def __init__(self,corXbase,corYbase,corXfin,corYfin,texto,tamanio,color,fuente = None):
         self.fuente = pygame.font.Font(fuente, tamanio)
         self.texto = self.fuente.render(texto,0,color)
